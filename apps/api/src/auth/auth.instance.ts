@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { jwt } from "better-auth/plugins";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { DATABASE_ID_STRATEGY, DEFAULT_USER_ROLE } from "./auth.constants";
+import { DATABASE_ID_STRATEGY, DEFAULT_USER_ROLE, FIELD_STORE_ID, FIELD_ROLE } from "./auth.constants";
 import * as authSchema from "./auth.schema";
 
 export function createAuthInstance(database: NeonHttpDatabase) {
@@ -16,7 +16,7 @@ export function createAuthInstance(database: NeonHttpDatabase) {
       modelName: "users",
       additionalFields: {
         storeId: { type: "string", required: true, fieldName: "store_id" },
-        role: { type: "string", defaultValue: DEFAULT_USER_ROLE, fieldName: "role" },
+        role: { type: "string", defaultValue: DEFAULT_USER_ROLE, fieldName: FIELD_ROLE },
       },
     },
     session: { modelName: "sessions" },
@@ -27,8 +27,8 @@ export function createAuthInstance(database: NeonHttpDatabase) {
         jwt: {
           definePayload: async ({ user }) => ({
             sub: user.id,
-            storeId: user["storeId"] as string,
-            role: user["role"] as string,
+            storeId: user[FIELD_STORE_ID] as string,
+            role: user[FIELD_ROLE] as string,
           }),
         },
       }),

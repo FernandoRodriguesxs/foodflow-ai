@@ -19,7 +19,8 @@
     "esModuleInterop": true,
     "paths": {
       "@database/*": ["src/database/*"],
-      "@auth/*": ["src/auth/*"]
+      "@auth/*": ["src/auth/*"],
+      "@tenant/*": ["src/tenant/*"]
     }
   },
   "include": ["src"],

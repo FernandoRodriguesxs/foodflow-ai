@@ -10,16 +10,11 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 import { stores } from "./stores.schema";
+import { ORDER_SOURCE_VALUES, ORDER_STATUS_VALUES, DEFAULT_ORDER_STATUS } from "./enum-values";
 
-export const orderSourceEnum = pgEnum("order_source", ["ifood", "whatsapp"]);
+export const orderSourceEnum = pgEnum("order_source", [...ORDER_SOURCE_VALUES]);
 
-export const orderStatusEnum = pgEnum("order_status", [
-  "PLACED",
-  "CONFIRMED",
-  "DISPATCHED",
-  "CONCLUDED",
-  "CANCELLED",
-]);
+export const orderStatusEnum = pgEnum("order_status", [...ORDER_STATUS_VALUES]);
 
 export const orders = pgTable(
   "orders",
@@ -30,7 +25,7 @@ export const orders = pgTable(
       .references(() => stores.id),
     externalId: varchar("external_id", { length: 255 }),
     source: orderSourceEnum("source").notNull(),
-    status: orderStatusEnum("status").default("PLACED").notNull(),
+    status: orderStatusEnum("status").default(DEFAULT_ORDER_STATUS).notNull(),
     customerName: varchar("customer_name", { length: 255 }),
     customerPhone: varchar("customer_phone", { length: 20 }),
     total: decimal("total", { precision: 10, scale: 2 }),

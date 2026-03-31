@@ -29,6 +29,13 @@
       "when": 1743400800000,
       "tag": "0003_better_auth_setup",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1743404400000,
+      "tag": "0004_rls_multi_tenant",
+      "breakpoints": true
     }
   ]
 }

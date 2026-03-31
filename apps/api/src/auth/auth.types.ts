@@ -26,12 +26,14 @@ export interface TokenResult {
   readonly token: string;
 }
 
+import { FIELD_STORE_ID, FIELD_ROLE } from "./auth.constants";
+
 export function createAuthenticatedUser(
   session: { user: { id: string } & Record<string, unknown> },
 ): AuthenticatedUser {
   return Object.freeze({
     userId: session.user.id,
-    storeId: session.user["storeId"] as string,
-    role: session.user["role"] as string,
+    storeId: session.user[FIELD_STORE_ID] as string,
+    role: session.user[FIELD_ROLE] as string,
   });
 }
