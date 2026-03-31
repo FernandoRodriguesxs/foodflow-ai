@@ -1,0 +1,4 @@
+
+> @foodflow/shared@0.0.0 build C:\Users\Aluga.com\foodflow-ai\packages\shared
+> tsc --project tsconfig.json
+

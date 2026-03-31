@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(unzip -o sdd-completo.zip)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Bash(unzip -o \"$f\")",
+      "Bash(done)",
+      "Bash(find /c/Users/Aluga.com/foodflow-ai/.claude/templates -type f -name *.md)",
+      "Bash(rm -f sdd-completo.zip sdd-templates.zip sdd-checklists.zip sdd-examples.zip sdd-tooling.zip)",
+      "Bash(mkdir -p specs/arc42 specs/c4/component-diagrams specs/bdd specs/adr changes/001-painel-pedidos-centralizados)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm install:*)",
+      "Bash(npx turbo:*)"
+    ]
+  }
+}
