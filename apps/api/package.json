@@ -7,13 +7,18 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "lint": "echo 'no linter configured yet'",
-    "test": "echo 'no tests yet'"
+    "test": "echo 'no tests yet'",
+    "db:test": "npx tsx src/database/test-connection.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
     "@foodflow/shared": "workspace:*",
+    "@neondatabase/serverless": "^1.0.2",
     "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.1.0",
     "@nestjs/platform-fastify": "^11.1.0",
+    "drizzle-orm": "^0.45.2",
     "fastify": "^5.3.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
@@ -21,6 +26,8 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.5",
     "@types/node": "^22.14.0",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }
