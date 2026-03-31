@@ -15,6 +15,13 @@
       "when": 1774973302065,
       "tag": "0001_illegal_energizer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774976222615,
+      "tag": "0002_gifted_senator_kelly",
+      "breakpoints": true
     }
   ]
 }
