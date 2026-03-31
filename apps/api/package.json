@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "nest start --watch",
-    "build": "nest build",
-    "start": "node dist/main.js",
+    "build": "nest build && tsc-alias",
+    "start": "node -r tsconfig-paths/register dist/main.js",
     "lint": "echo 'no linter configured yet'",
     "test": "echo 'no tests yet'",
     "db:test": "npx tsx src/database/test-connection.ts",
@@ -18,6 +18,7 @@
     "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.1.0",
     "@nestjs/platform-fastify": "^11.1.0",
+    "better-auth": "^1.5.6",
     "drizzle-orm": "^0.45.2",
     "fastify": "^5.3.3",
     "reflect-metadata": "^0.2.2",
@@ -27,6 +28,8 @@
     "@nestjs/cli": "^11.0.5",
     "@types/node": "^22.14.0",
     "drizzle-kit": "^0.31.10",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
