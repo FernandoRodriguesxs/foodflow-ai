@@ -8,6 +8,13 @@
       "when": 1774973032538,
       "tag": "0000_true_shaman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774973302065,
+      "tag": "0001_illegal_energizer",
+      "breakpoints": true
     }
   ]
 }
