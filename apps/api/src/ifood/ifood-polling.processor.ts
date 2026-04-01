@@ -5,6 +5,7 @@ import { IFoodPollingClient } from "./ifood-polling-client";
 import { IFoodEventDeduplicator } from "./ifood-event-deduplicator";
 import { IFoodWebhookService } from "./ifood-webhook.service";
 import { createWebhookEvent } from "./ifood-webhook-event.factory";
+import { IFoodEventId } from "./value-objects/ifood-event-id";
 import { IFOOD_POLLING_QUEUE } from "./ifood.constants";
 import type { IFoodWebhookEventPayload } from "./ifood.types";
 
@@ -22,6 +23,7 @@ export class IFoodPollingProcessor extends WorkerHost {
 
   async process(_job: Job): Promise<void> {
     const events = await this.pollingClient.fetchEvents();
+    await this.pollingClient.acknowledgeEvents(events.map((event) => IFoodEventId.create(event.id)));
     const newEvents = await this.deduplicator.filterNewEvents(events);
     this.logger.log(`Polled ${events.length} events, ${newEvents.length} new`);
     await this.processNewEvents(newEvents);

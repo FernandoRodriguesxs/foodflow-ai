@@ -12,6 +12,7 @@ import type { IFoodOAuthTokenResponse } from "./ifood.types";
 
 const OAUTH_PATH = "/authentication/v1.0/oauth/token";
 const OAUTH_CONTENT_TYPE = "application/x-www-form-urlencoded";
+const OAUTH_GRANT_TYPE = "client_credentials";
 const OAUTH_REQUEST_FAILED = "iFood OAuth request failed";
 
 @Injectable()
@@ -46,7 +47,7 @@ export class IFoodAuthService {
 
   private buildRequestBody(): string {
     return new URLSearchParams({
-      grant_type: "client_credentials",
+      grant_type: OAUTH_GRANT_TYPE,
       client_id: getIFoodClientId(),
       client_secret: getIFoodClientSecret(),
     }).toString();

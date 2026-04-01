@@ -4,6 +4,8 @@ import Redis from "ioredis";
 import { IFoodWebhookController } from "./ifood-webhook.controller";
 import { IFoodWebhookService } from "./ifood-webhook.service";
 import { IFoodEventRepository } from "./ifood-event.repository";
+import { IFoodAcknowledgmentClient } from "./ifood-acknowledgment-client";
+import { IFoodAcknowledgmentService } from "./ifood-acknowledgment.service";
 import { MerchantStoreResolver } from "./merchant-store.resolver";
 import { IFoodAuthService } from "./ifood-auth.service";
 import { IFoodPollingClient } from "./ifood-polling-client";
@@ -27,6 +29,8 @@ import {
   providers: [
     IFoodWebhookService,
     IFoodEventRepository,
+    IFoodAcknowledgmentClient,
+    IFoodAcknowledgmentService,
     MerchantStoreResolver,
     IFoodAuthService,
     IFoodPollingClient,

@@ -2,11 +2,13 @@ import { IFoodPollingProcessor } from "@ifood/ifood-polling.processor";
 import type { IFoodPollingClient } from "@ifood/ifood-polling-client";
 import type { IFoodEventDeduplicator } from "@ifood/ifood-event-deduplicator";
 import type { IFoodWebhookService } from "@ifood/ifood-webhook.service";
+import { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
 import { createFakePollingPayloads } from "./fixtures";
 
 describe("IFoodPollingProcessor", () => {
   const mockPollingClient = {
     fetchEvents: jest.fn(),
+    acknowledgeEvents: jest.fn().mockResolvedValue(undefined),
   } as unknown as jest.Mocked<IFoodPollingClient>;
 
   const mockDeduplicator = {
@@ -25,7 +27,7 @@ describe("IFoodPollingProcessor", () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it("should process new events through webhook service", async () => {
+  it("should acknowledge and process new events through webhook service", async () => {
     const polledEvents = createFakePollingPayloads(3);
     const newEvents = createFakePollingPayloads(2);
     mockPollingClient.fetchEvents.mockResolvedValueOnce(polledEvents);
@@ -33,6 +35,9 @@ describe("IFoodPollingProcessor", () => {
 
     await processor.process({} as any);
 
+    expect(mockPollingClient.acknowledgeEvents).toHaveBeenCalledWith(
+      polledEvents.map((event) => IFoodEventId.create(event.id)),
+    );
     expect(mockDeduplicator.filterNewEvents).toHaveBeenCalledWith(polledEvents);
     expect(mockWebhookService.processWebhookEvent).toHaveBeenCalledTimes(2);
   });

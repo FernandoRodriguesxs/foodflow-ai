@@ -1,5 +1,6 @@
 import { IFoodWebhookService } from "../ifood-webhook.service";
 import type { IFoodEventRepository } from "../ifood-event.repository";
+import type { IFoodAcknowledgmentService } from "../ifood-acknowledgment.service";
 import type { MerchantStoreResolver } from "../merchant-store.resolver";
 import { PROCESS_IFOOD_EVENT_JOB } from "../ifood.constants";
 import {
@@ -14,23 +15,31 @@ describe("IFoodWebhookService", () => {
     saveEvent: jest.fn().mockResolvedValue(undefined),
   } as unknown as jest.Mocked<IFoodEventRepository>;
 
+  const mockAcknowledgment = {
+    acknowledgeEvents: jest.fn().mockResolvedValue(undefined),
+  } as unknown as jest.Mocked<IFoodAcknowledgmentService>;
+
   const mockResolver = {
     resolveStoreId: jest.fn().mockResolvedValue(FAKE_STORE_ID_VO),
   } as unknown as jest.Mocked<MerchantStoreResolver>;
 
   const mockQueue = { add: jest.fn().mockResolvedValue(undefined) } as any;
 
-  const service = new IFoodWebhookService(mockRepository, mockResolver, mockQueue);
+  const service = new IFoodWebhookService(mockRepository, mockAcknowledgment, mockResolver, mockQueue);
 
   afterEach(() => jest.clearAllMocks());
 
-  it("should resolve store, save event, and enqueue job", async () => {
+  it("should resolve store, save event, acknowledge, and enqueue job", async () => {
     const event = createFakeWebhookEvent();
 
     await service.processWebhookEvent(event);
 
     expect(mockResolver.resolveStoreId).toHaveBeenCalledWith(event.merchantId);
     expect(mockRepository.saveEvent).toHaveBeenCalledWith(FAKE_STORE_ID_VO, event);
+    expect(mockAcknowledgment.acknowledgeEvents).toHaveBeenCalledWith(
+      FAKE_STORE_ID_VO,
+      [event.eventId],
+    );
     expect(mockQueue.add).toHaveBeenCalledWith(
       PROCESS_IFOOD_EVENT_JOB,
       { eventId: FAKE_EVENT_ID, storeId: FAKE_STORE_ID },
