@@ -1,18 +1,43 @@
 import { Module } from "@nestjs/common";
 import { BullModule } from "@nestjs/bullmq";
+import Redis from "ioredis";
 import { IFoodWebhookController } from "./ifood-webhook.controller";
 import { IFoodWebhookService } from "./ifood-webhook.service";
 import { IFoodEventRepository } from "./ifood-event.repository";
 import { MerchantStoreResolver } from "./merchant-store.resolver";
-import { IFOOD_EVENT_QUEUE, parseRedisConnection } from "./ifood.constants";
+import { IFoodAuthService } from "./ifood-auth.service";
+import { IFoodPollingClient } from "./ifood-polling-client";
+import { IFoodEventDeduplicator } from "./ifood-event-deduplicator";
+import { IFoodPollingProcessor } from "./ifood-polling.processor";
+import { IFoodPollingScheduler } from "./ifood-polling.scheduler";
+import {
+  IFOOD_EVENT_QUEUE,
+  IFOOD_POLLING_QUEUE,
+  IFOOD_REDIS_TOKEN,
+  parseRedisConnection,
+} from "./ifood.constants";
 
 @Module({
   imports: [
     BullModule.forRoot({ connection: parseRedisConnection() }),
     BullModule.registerQueue({ name: IFOOD_EVENT_QUEUE }),
+    BullModule.registerQueue({ name: IFOOD_POLLING_QUEUE }),
   ],
   controllers: [IFoodWebhookController],
-  providers: [IFoodWebhookService, IFoodEventRepository, MerchantStoreResolver],
+  providers: [
+    IFoodWebhookService,
+    IFoodEventRepository,
+    MerchantStoreResolver,
+    IFoodAuthService,
+    IFoodPollingClient,
+    IFoodEventDeduplicator,
+    IFoodPollingProcessor,
+    IFoodPollingScheduler,
+    {
+      provide: IFOOD_REDIS_TOKEN,
+      useFactory: () => new Redis(parseRedisConnection()),
+    },
+  ],
   exports: [IFoodWebhookService],
 })
 export class IFoodModule {}

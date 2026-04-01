@@ -23,3 +23,8 @@ export interface ProcessIFoodEventJobData {
   readonly eventId: string;
   readonly storeId: string;
 }
+
+export interface IFoodOAuthTokenResponse {
+  readonly accessToken: string;
+  readonly expiresIn: number;
+}

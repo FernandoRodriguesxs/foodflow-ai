@@ -31,3 +31,14 @@ export function createFakeWebhookEvent(): IFoodWebhookEvent {
     payload,
   });
 }
+
+export function createFakePollingPayloads(count: number): IFoodWebhookEventPayload[] {
+  return Array.from({ length: count }, (_, index) => ({
+    id: `polling-event-${index}`,
+    code: "PLC",
+    fullCode: "PLACED",
+    merchantId: FAKE_MERCHANT_ID,
+    orderId: `polling-order-${index}`,
+    createdAt: "2026-04-01T10:00:00Z",
+  }));
+}
