@@ -1,11 +1,13 @@
 import { Processor, WorkerHost } from "@nestjs/bullmq";
 import { Logger } from "@nestjs/common";
 import type { Job } from "bullmq";
+import { OrderNormalizerService } from "@orders/order-normalizer.service";
 import { IFoodOrderClient } from "./ifood-order-client";
 import { IFoodEventRepository } from "./ifood-event.repository";
-import { IFoodOrderId } from "./value-objects/ifood-order-id";
-import { IFoodEventId } from "./value-objects/ifood-event-id";
-import { StoreId } from "./value-objects/store-id";
+import { extractNormalizedOrder } from "./ifood-order-data-extractor";
+import { IFoodOrderId } from "@ifood/value-objects/ifood-order-id";
+import { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
+import { StoreId } from "@ifood/value-objects/store-id";
 import { IFOOD_EVENT_QUEUE, IFOOD_PLACED_EVENT_CODE } from "./ifood.constants";
 import type { ProcessIFoodEventJobData } from "./ifood.types";
 
@@ -16,6 +18,7 @@ export class IFoodOrderProcessor extends WorkerHost {
   constructor(
     private readonly orderClient: IFoodOrderClient,
     private readonly eventRepository: IFoodEventRepository,
+    private readonly orderNormalizer: OrderNormalizerService,
   ) {
     super();
   }
@@ -37,7 +40,9 @@ export class IFoodOrderProcessor extends WorkerHost {
     const orderId = IFoodOrderId.create(data.orderId);
     const storeId = StoreId.create(data.storeId);
     const eventId = IFoodEventId.create(data.eventId);
-    await this.orderClient.fetchOrderDetails(orderId);
+    const orderDetails = await this.orderClient.fetchOrderDetails(orderId);
+    const normalizedOrder = extractNormalizedOrder(storeId, orderDetails);
+    await this.orderNormalizer.normalizeIFoodOrder(normalizedOrder);
     await this.eventRepository.markAsProcessed(storeId, eventId);
     this.logger.log(`Processed PLACED event ${data.eventId} for order ${data.orderId}`);
   }

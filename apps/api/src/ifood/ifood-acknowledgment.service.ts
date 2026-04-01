@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { IFoodAcknowledgmentClient } from "./ifood-acknowledgment-client";
 import { IFoodEventRepository } from "./ifood-event.repository";
 import type { StoreId } from "@ifood/value-objects/store-id";
-import type { IFoodEventId } from "./value-objects/ifood-event-id";
+import type { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
 
 @Injectable()
 export class IFoodAcknowledgmentService {

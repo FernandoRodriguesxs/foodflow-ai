@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { BullModule } from "@nestjs/bullmq";
 import Redis from "ioredis";
+import { OrdersModule } from "@orders/orders.module";
 import { IFoodWebhookController } from "./ifood-webhook.controller";
 import { IFoodWebhookService } from "./ifood-webhook.service";
 import { IFoodEventRepository } from "./ifood-event.repository";
@@ -24,6 +25,7 @@ import {
 
 @Module({
   imports: [
+    OrdersModule,
     BullModule.forRoot({ connection: parseRedisConnection() }),
     BullModule.registerQueue({ name: IFOOD_EVENT_QUEUE }),
     BullModule.registerQueue({ name: IFOOD_POLLING_QUEUE }),

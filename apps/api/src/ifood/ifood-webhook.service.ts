@@ -20,12 +20,12 @@ export class IFoodWebhookService {
     const storeId = await this.merchantResolver.resolveStoreId(event.merchantId);
     await this.eventRepository.saveEvent(storeId, event);
     await this.acknowledgmentService.acknowledgeEvents(storeId, [event.eventId]);
-    const jobData: ProcessIFoodEventJobData = {
+    const jobData: ProcessIFoodEventJobData = Object.freeze({
       eventId: event.eventId.value,
       storeId: storeId.value,
       orderId: event.orderId.value,
       eventType: event.eventType,
-    };
+    });
     await this.eventQueue.add(PROCESS_IFOOD_EVENT_JOB, jobData);
   }
 }

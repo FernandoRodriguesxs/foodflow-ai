@@ -1,4 +1,4 @@
-import type { StoreId } from "./value-objects/store-id";
+import type { StoreId } from "@ifood/value-objects/store-id";
 import type {
   IFoodOrderDetails,
   IFoodOrderItem,

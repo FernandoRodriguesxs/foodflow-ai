@@ -12,5 +12,6 @@ module.exports = {
     "^@auth/(.*)$": "<rootDir>/auth/$1",
     "^@tenant/(.*)$": "<rootDir>/tenant/$1",
     "^@ifood/(.*)$": "<rootDir>/ifood/$1",
+    "^@orders/(.*)$": "<rootDir>/orders/$1",
   },
 };

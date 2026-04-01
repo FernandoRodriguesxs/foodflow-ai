@@ -3,7 +3,7 @@ import { eq, inArray } from "drizzle-orm";
 import { TenantDatabaseService } from "@tenant/tenant-database.service";
 import { ifoodEvents } from "@database/schemas/ifood-events.schema";
 import type { StoreId } from "@ifood/value-objects/store-id";
-import type { IFoodEventId } from "./value-objects/ifood-event-id";
+import type { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
 import type { IFoodWebhookEvent } from "./ifood.types";
 
 @Injectable()

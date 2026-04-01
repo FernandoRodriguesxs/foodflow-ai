@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { IFoodHttpClient } from "./ifood-http-client";
-import type { IFoodEventId } from "./value-objects/ifood-event-id";
+import type { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
 
 const ACKNOWLEDGMENT_PATH = "/events/v1.0/events/acknowledgment";
 

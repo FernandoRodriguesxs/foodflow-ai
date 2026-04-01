@@ -5,7 +5,7 @@ import { IFoodPollingClient } from "./ifood-polling-client";
 import { IFoodEventDeduplicator } from "./ifood-event-deduplicator";
 import { IFoodWebhookService } from "./ifood-webhook.service";
 import { createWebhookEvent } from "./ifood-webhook-event.factory";
-import { IFoodEventId } from "./value-objects/ifood-event-id";
+import { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
 import { IFOOD_POLLING_QUEUE } from "./ifood.constants";
 import type { IFoodWebhookEventPayload } from "./ifood.types";
 
@@ -44,9 +44,9 @@ export class IFoodPollingProcessor extends WorkerHost {
   }
 
   private logRejectedResults(results: PromiseSettledResult<void>[]): void {
-    const rejected = results.filter((result) => result.status === "rejected");
-    rejected.forEach((result) =>
-      this.logger.error(`Failed to process polling event: ${(result as PromiseRejectedResult).reason}`),
-    );
+    for (const result of results) {
+      if (result.status !== "rejected") continue;
+      this.logger.error(`Failed to process polling event: ${result.reason}`);
+    }
   }
 }

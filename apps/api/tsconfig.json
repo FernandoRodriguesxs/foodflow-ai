@@ -21,7 +21,8 @@
       "@database/*": ["src/database/*"],
       "@auth/*": ["src/auth/*"],
       "@tenant/*": ["src/tenant/*"],
-      "@ifood/*": ["src/ifood/*"]
+      "@ifood/*": ["src/ifood/*"],
+      "@orders/*": ["src/orders/*"]
     }
   },
   "include": ["src"],

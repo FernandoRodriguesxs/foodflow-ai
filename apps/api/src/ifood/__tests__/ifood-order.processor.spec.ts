@@ -1,6 +1,7 @@
 import { IFoodOrderProcessor } from "@ifood/ifood-order.processor";
 import type { IFoodOrderClient } from "@ifood/ifood-order-client";
 import type { IFoodEventRepository } from "@ifood/ifood-event.repository";
+import type { OrderNormalizerService } from "@orders/order-normalizer.service";
 import {
   FAKE_STORE_ID,
   FAKE_EVENT_ID,
@@ -17,7 +18,15 @@ describe("IFoodOrderProcessor", () => {
     markAsProcessed: jest.fn().mockResolvedValue(undefined),
   } as unknown as jest.Mocked<IFoodEventRepository>;
 
-  const processor = new IFoodOrderProcessor(mockOrderClient, mockEventRepository);
+  const mockOrderNormalizer = {
+    normalizeIFoodOrder: jest.fn().mockResolvedValue(undefined),
+  } as unknown as jest.Mocked<OrderNormalizerService>;
+
+  const processor = new IFoodOrderProcessor(
+    mockOrderClient,
+    mockEventRepository,
+    mockOrderNormalizer,
+  );
 
   afterEach(() => jest.clearAllMocks());
 
@@ -30,7 +39,22 @@ describe("IFoodOrderProcessor", () => {
     expect(mockOrderClient.fetchOrderDetails).toHaveBeenCalledTimes(1);
   });
 
-  it("should mark event as processed after fetching order details", async () => {
+  it("should normalize iFood order via OrderNormalizerService", async () => {
+    const jobData = createFakeProcessJobData();
+    mockOrderClient.fetchOrderDetails.mockResolvedValueOnce(createFakeIFoodOrderDetails());
+
+    await processor.process({ data: jobData } as any);
+
+    expect(mockOrderNormalizer.normalizeIFoodOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        storeId: FAKE_STORE_ID,
+        customerName: "Maria Silva",
+        total: 61,
+      }),
+    );
+  });
+
+  it("should mark event as processed after normalizing order", async () => {
     const jobData = createFakeProcessJobData();
     mockOrderClient.fetchOrderDetails.mockResolvedValueOnce(createFakeIFoodOrderDetails());
 
@@ -48,6 +72,7 @@ describe("IFoodOrderProcessor", () => {
     await processor.process({ data: jobData } as any);
 
     expect(mockOrderClient.fetchOrderDetails).not.toHaveBeenCalled();
+    expect(mockOrderNormalizer.normalizeIFoodOrder).not.toHaveBeenCalled();
     expect(mockEventRepository.markAsProcessed).not.toHaveBeenCalled();
   });
 
