@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { TenantDatabaseService } from "@tenant/tenant-database.service";
+import type { StoreId } from "@shared/value-objects/store-id";
+import type { OrderId } from "@shared/value-objects/order-id";
 import { orders } from "@database/schemas/orders.schema";
 import { orderStatusHistory } from "@database/schemas/order-status-history.schema";
 import type { CreatedOrder, StatusTransitionData, StatusValue } from "./orders.types";
@@ -10,9 +12,9 @@ import type { CreatedOrder, StatusTransitionData, StatusValue } from "./orders.t
 export class OrderStatusRepository {
   constructor(private readonly tenantDatabase: TenantDatabaseService) {}
 
-  async findById(storeId: string, orderId: string): Promise<CreatedOrder | undefined> {
-    return this.tenantDatabase.executeWithTenant(storeId, async (transaction) => {
-      const [order] = await transaction.select().from(orders).where(eq(orders.id, orderId));
+  async findById(storeId: StoreId, orderId: OrderId): Promise<CreatedOrder | undefined> {
+    return this.tenantDatabase.executeWithTenant(storeId.value, async (transaction) => {
+      const [order] = await transaction.select().from(orders).where(eq(orders.id, orderId.value));
       return order;
     });
   }

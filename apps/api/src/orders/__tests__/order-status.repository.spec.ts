@@ -1,5 +1,7 @@
 import { OrderStatusRepository } from "@orders/order-status.repository";
 import type { TenantDatabaseService } from "@tenant/tenant-database.service";
+import { StoreId } from "@shared/value-objects/store-id";
+import { OrderId } from "@shared/value-objects/order-id";
 import { FAKE_STORE_ID, FAKE_CREATED_ORDER_ID, createFakeCreatedOrder } from "./fixtures";
 
 describe("OrderStatusRepository", () => {
@@ -27,12 +29,14 @@ describe("OrderStatusRepository", () => {
   } as unknown as jest.Mocked<TenantDatabaseService>;
 
   const repository = new OrderStatusRepository(mockTenantDatabase);
+  const fakeStoreId = StoreId.create(FAKE_STORE_ID);
+  const fakeOrderId = OrderId.create(FAKE_CREATED_ORDER_ID);
 
   afterEach(() => jest.clearAllMocks());
 
   describe("findById", () => {
     it("should execute within tenant context", async () => {
-      await repository.findById(FAKE_STORE_ID, FAKE_CREATED_ORDER_ID);
+      await repository.findById(fakeStoreId, fakeOrderId);
 
       expect(mockTenantDatabase.executeWithTenant).toHaveBeenCalledWith(
         FAKE_STORE_ID,
@@ -41,7 +45,7 @@ describe("OrderStatusRepository", () => {
     });
 
     it("should return the order when found", async () => {
-      const result = await repository.findById(FAKE_STORE_ID, FAKE_CREATED_ORDER_ID);
+      const result = await repository.findById(fakeStoreId, fakeOrderId);
 
       expect(result).toEqual(fakeOrder);
     });
@@ -49,7 +53,7 @@ describe("OrderStatusRepository", () => {
     it("should return undefined when not found", async () => {
       mockSelectWhere.mockResolvedValueOnce([]);
 
-      const result = await repository.findById(FAKE_STORE_ID, "nonexistent");
+      const result = await repository.findById(fakeStoreId, OrderId.create("nonexistent"));
 
       expect(result).toBeUndefined();
     });

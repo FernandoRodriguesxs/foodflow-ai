@@ -1,7 +1,7 @@
 import type { CreateOrderData, CreateOrderItemData } from "./orders.types";
 
 export function buildOrderValues(orderData: CreateOrderData) {
-  return {
+  return Object.freeze({
     storeId: orderData.storeId,
     externalId: orderData.externalId,
     source: orderData.source,
@@ -9,7 +9,7 @@ export function buildOrderValues(orderData: CreateOrderData) {
     customerPhone: orderData.customerPhone,
     total: String(orderData.total),
     rawData: orderData.rawData,
-  };
+  });
 }
 
 export function buildItemValues(orderId: string, items: ReadonlyArray<CreateOrderItemData>) {

@@ -22,7 +22,9 @@
       "@auth/*": ["src/auth/*"],
       "@tenant/*": ["src/tenant/*"],
       "@ifood/*": ["src/ifood/*"],
-      "@orders/*": ["src/orders/*"]
+      "@orders/*": ["src/orders/*"],
+      "@dashboard/*": ["src/dashboard/*"],
+      "@shared/*": ["src/shared/*"]
     }
   },
   "include": ["src"],

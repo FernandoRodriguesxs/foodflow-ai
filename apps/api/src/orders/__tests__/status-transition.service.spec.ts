@@ -1,7 +1,12 @@
 import { StatusTransitionService } from "@orders/status-transition.service";
 import { InvalidStatusTransitionError } from "@orders/errors/invalid-status-transition.error";
 import type { OrderStatusRepository } from "@orders/order-status.repository";
+import { StoreId } from "@shared/value-objects/store-id";
+import { OrderId } from "@shared/value-objects/order-id";
 import { FAKE_STORE_ID, FAKE_CREATED_ORDER_ID, createFakeCreatedOrder } from "./fixtures";
+
+const fakeStoreId = StoreId.create(FAKE_STORE_ID);
+const fakeOrderId = OrderId.create(FAKE_CREATED_ORDER_ID);
 
 describe("StatusTransitionService", () => {
   const fakeOrder = createFakeCreatedOrder();
@@ -16,7 +21,7 @@ describe("StatusTransitionService", () => {
   afterEach(() => jest.clearAllMocks());
 
   it("should transition PLACED to CONFIRMED", async () => {
-    const result = await service.transition(FAKE_STORE_ID, FAKE_CREATED_ORDER_ID, "CONFIRMED");
+    const result = await service.transition(fakeStoreId, fakeOrderId, "CONFIRMED");
 
     expect(result.status).toBe("CONFIRMED");
     expect(mockRepository.transitionStatus).toHaveBeenCalledWith({
@@ -34,17 +39,18 @@ describe("StatusTransitionService", () => {
     const rejectedService = new StatusTransitionService(mockRepository);
 
     await expect(
-      rejectedService.transition(FAKE_STORE_ID, FAKE_CREATED_ORDER_ID, "PLACED"),
+      rejectedService.transition(fakeStoreId, fakeOrderId, "PLACED"),
     ).rejects.toThrow(InvalidStatusTransitionError);
   });
 
   it("should throw when order is not found", async () => {
     mockRepository.findById = jest.fn().mockResolvedValue(undefined);
+    const nonexistentOrderId = OrderId.create("nonexistent-id");
 
     const notFoundService = new StatusTransitionService(mockRepository);
 
     await expect(
-      notFoundService.transition(FAKE_STORE_ID, "nonexistent-id", "CONFIRMED"),
+      notFoundService.transition(fakeStoreId, nonexistentOrderId, "CONFIRMED"),
     ).rejects.toThrow("Order nonexistent-id not found");
   });
 
@@ -53,7 +59,7 @@ describe("StatusTransitionService", () => {
     mockRepository.transitionStatus = jest.fn().mockResolvedValue({ ...fakeOrder, status: "CANCELLED" });
 
     const cancelService = new StatusTransitionService(mockRepository);
-    const result = await cancelService.transition(FAKE_STORE_ID, FAKE_CREATED_ORDER_ID, "CANCELLED");
+    const result = await cancelService.transition(fakeStoreId, fakeOrderId, "CANCELLED");
 
     expect(result.status).toBe("CANCELLED");
   });

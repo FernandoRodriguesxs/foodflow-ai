@@ -44,9 +44,8 @@ export class IFoodPollingProcessor extends WorkerHost {
   }
 
   private logRejectedResults(results: PromiseSettledResult<void>[]): void {
-    for (const result of results) {
-      if (result.status !== "rejected") continue;
-      this.logger.error(`Failed to process polling event: ${result.reason}`);
-    }
+    results
+      .filter((result): result is PromiseRejectedResult => result.status === "rejected")
+      .forEach((result) => this.logger.error(`Failed to process polling event: ${result.reason}`));
   }
 }

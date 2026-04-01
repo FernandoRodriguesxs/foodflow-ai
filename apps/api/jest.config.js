@@ -13,5 +13,7 @@ module.exports = {
     "^@tenant/(.*)$": "<rootDir>/tenant/$1",
     "^@ifood/(.*)$": "<rootDir>/ifood/$1",
     "^@orders/(.*)$": "<rootDir>/orders/$1",
+    "^@dashboard/(.*)$": "<rootDir>/dashboard/$1",
+    "^@shared/(.*)$": "<rootDir>/shared/$1",
   },
 };
