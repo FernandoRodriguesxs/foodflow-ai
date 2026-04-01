@@ -20,7 +20,8 @@
     "paths": {
       "@database/*": ["src/database/*"],
       "@auth/*": ["src/auth/*"],
-      "@tenant/*": ["src/tenant/*"]
+      "@tenant/*": ["src/tenant/*"],
+      "@ifood/*": ["src/ifood/*"]
     }
   },
   "include": ["src"],
