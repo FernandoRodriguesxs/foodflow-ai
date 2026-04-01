@@ -3,6 +3,7 @@ import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { TenantDatabaseService } from "@tenant/tenant-database.service";
 import { orders } from "@database/schemas/orders.schema";
 import { orderItems } from "@database/schemas/order-items.schema";
+import { buildOrderValues, buildItemValues } from "./order-value-builder";
 import type { CreateOrderData, CreateOrderItemData, CreatedOrder } from "./orders.types";
 
 @Injectable()
@@ -37,26 +38,4 @@ export class OrderRepository {
       .insert(orderItems)
       .values(buildItemValues(orderId, items));
   }
-}
-
-function buildOrderValues(orderData: CreateOrderData) {
-  return {
-    storeId: orderData.storeId,
-    externalId: orderData.externalId,
-    source: orderData.source,
-    customerName: orderData.customerName,
-    customerPhone: orderData.customerPhone,
-    total: String(orderData.total),
-    rawData: orderData.rawData,
-  };
-}
-
-function buildItemValues(orderId: string, items: ReadonlyArray<CreateOrderItemData>) {
-  return items.map((item) => ({
-    orderId,
-    name: item.name,
-    quantity: item.quantity,
-    unitPrice: String(item.unitPrice),
-    notes: item.notes,
-  }));
 }
