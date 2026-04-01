@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { TenantDatabaseService } from "@tenant/tenant-database.service";
 import { ifoodEvents } from "@database/schemas/ifood-events.schema";
 import type { StoreId } from "@ifood/value-objects/store-id";
@@ -20,6 +20,15 @@ export class IFoodEventRepository {
         eventType: event.eventType,
         payload: event.payload,
       }),
+    );
+  }
+
+  async markAsProcessed(storeId: StoreId, eventId: IFoodEventId): Promise<void> {
+    await this.tenantDatabase.executeWithTenant(storeId.value, (transaction) =>
+      transaction
+        .update(ifoodEvents)
+        .set({ processed: true })
+        .where(eq(ifoodEvents.eventId, eventId.value)),
     );
   }
 

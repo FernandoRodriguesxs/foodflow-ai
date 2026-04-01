@@ -8,6 +8,7 @@ import {
   FAKE_STORE_ID,
   FAKE_STORE_ID_VO,
   FAKE_EVENT_ID,
+  FAKE_ORDER_ID,
 } from "./fixtures";
 
 describe("IFoodWebhookService", () => {
@@ -42,7 +43,12 @@ describe("IFoodWebhookService", () => {
     );
     expect(mockQueue.add).toHaveBeenCalledWith(
       PROCESS_IFOOD_EVENT_JOB,
-      { eventId: FAKE_EVENT_ID, storeId: FAKE_STORE_ID },
+      {
+        eventId: FAKE_EVENT_ID,
+        storeId: FAKE_STORE_ID,
+        orderId: FAKE_ORDER_ID,
+        eventType: "PLACED",
+      },
     );
   });
 

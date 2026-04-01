@@ -12,6 +12,9 @@ import { IFoodPollingClient } from "./ifood-polling-client";
 import { IFoodEventDeduplicator } from "./ifood-event-deduplicator";
 import { IFoodPollingProcessor } from "./ifood-polling.processor";
 import { IFoodPollingScheduler } from "./ifood-polling.scheduler";
+import { IFoodHttpClient } from "./ifood-http-client";
+import { IFoodOrderClient } from "./ifood-order-client";
+import { IFoodOrderProcessor } from "./ifood-order.processor";
 import {
   IFOOD_EVENT_QUEUE,
   IFOOD_POLLING_QUEUE,
@@ -33,10 +36,13 @@ import {
     IFoodAcknowledgmentService,
     MerchantStoreResolver,
     IFoodAuthService,
+    IFoodHttpClient,
     IFoodPollingClient,
     IFoodEventDeduplicator,
     IFoodPollingProcessor,
     IFoodPollingScheduler,
+    IFoodOrderClient,
+    IFoodOrderProcessor,
     {
       provide: IFOOD_REDIS_TOKEN,
       useFactory: () => new Redis(parseRedisConnection()),

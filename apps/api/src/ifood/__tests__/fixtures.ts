@@ -2,7 +2,12 @@ import { IFoodEventId } from "../value-objects/ifood-event-id";
 import { IFoodOrderId } from "../value-objects/ifood-order-id";
 import { MerchantId } from "../value-objects/merchant-id";
 import { StoreId } from "../value-objects/store-id";
-import type { IFoodWebhookEvent, IFoodWebhookEventPayload } from "../ifood.types";
+import type {
+  IFoodWebhookEvent,
+  IFoodWebhookEventPayload,
+  IFoodOrderDetails,
+  ProcessIFoodEventJobData,
+} from "../ifood.types";
 
 export const FAKE_STORE_ID = "store-uuid-123";
 export const FAKE_STORE_ID_VO = StoreId.create(FAKE_STORE_ID);
@@ -41,4 +46,48 @@ export function createFakePollingPayloads(count: number): IFoodWebhookEventPaylo
     orderId: `polling-order-${index}`,
     createdAt: "2026-04-01T10:00:00Z",
   }));
+}
+
+export function createFakeIFoodOrderDetails(): IFoodOrderDetails {
+  return {
+    id: FAKE_ORDER_ID,
+    createdAt: "2026-04-01T12:00:00Z",
+    customer: {
+      id: "customer-uuid-001",
+      name: "Maria Silva",
+      phone: { number: "11999998888" },
+    },
+    items: [
+      {
+        id: "item-uuid-001",
+        name: "Pizza Margherita",
+        quantity: 2,
+        unitPrice: 25.5,
+        price: 51,
+        observations: "Extra cheese",
+      },
+      {
+        id: "item-uuid-002",
+        name: "Coca-Cola 350ml",
+        quantity: 1,
+        unitPrice: 10,
+        price: 10,
+      },
+    ],
+    totalPrice: 61,
+    subTotal: 61,
+    deliveryFee: 0,
+  };
+}
+
+export function createFakeProcessJobData(
+  overrides?: Partial<ProcessIFoodEventJobData>,
+): ProcessIFoodEventJobData {
+  return {
+    eventId: FAKE_EVENT_ID,
+    storeId: FAKE_STORE_ID,
+    orderId: FAKE_ORDER_ID,
+    eventType: "PLACED",
+    ...overrides,
+  };
 }

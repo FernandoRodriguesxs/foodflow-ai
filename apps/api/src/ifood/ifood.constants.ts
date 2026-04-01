@@ -6,6 +6,8 @@ export const IFOOD_POLLING_INTERVAL_MS = 30_000;
 export const IFOOD_TOKEN_CACHE_KEY = "ifood:oauth:token";
 export const IFOOD_TOKEN_SAFETY_MARGIN_SECONDS = 60;
 export const IFOOD_REDIS_TOKEN = Symbol("IFOOD_REDIS_TOKEN");
+export const IFOOD_ORDER_PATH = "/order/v1.0/orders";
+export const IFOOD_PLACED_EVENT_CODE = "PLACED";
 
 const DEFAULT_REDIS_PORT = 6379;
 

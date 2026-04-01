@@ -1,51 +1,34 @@
 import { IFoodPollingClient } from "@ifood/ifood-polling-client";
-import type { IFoodAuthService } from "@ifood/ifood-auth.service";
+import type { IFoodHttpClient } from "@ifood/ifood-http-client";
 import type { IFoodAcknowledgmentClient } from "@ifood/ifood-acknowledgment-client";
 import { IFoodEventId } from "@ifood/value-objects/ifood-event-id";
 import { createFakePollingPayloads } from "./fixtures";
 
-const FAKE_TOKEN = "bearer-token-123";
-const FAKE_BASE_URL = "https://merchant-api.ifood.com.br";
-
 describe("IFoodPollingClient", () => {
-  const mockAuthService = {
-    getAccessToken: jest.fn().mockResolvedValue(FAKE_TOKEN),
-  } as unknown as jest.Mocked<IFoodAuthService>;
+  const mockHttpClient = {
+    authenticatedGet: jest.fn(),
+  } as unknown as jest.Mocked<IFoodHttpClient>;
 
   const mockAcknowledgmentClient = {
     acknowledgeEvents: jest.fn().mockResolvedValue(undefined),
   } as unknown as jest.Mocked<IFoodAcknowledgmentClient>;
 
-  const client = new IFoodPollingClient(mockAuthService, mockAcknowledgmentClient);
+  const client = new IFoodPollingClient(mockHttpClient, mockAcknowledgmentClient);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    process.env.IFOOD_API_BASE_URL = FAKE_BASE_URL;
-    global.fetch = jest.fn();
-  });
+  afterEach(() => jest.clearAllMocks());
 
-  it("should fetch events with authorization header", async () => {
+  it("should fetch events from polling endpoint", async () => {
     const fakeEvents = createFakePollingPayloads(2);
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
+    mockHttpClient.authenticatedGet.mockResolvedValueOnce({
       json: async () => fakeEvents,
-    });
+    } as unknown as Response);
 
     const events = await client.fetchEvents();
 
     expect(events).toEqual(fakeEvents);
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining("/events/v1.0/events:polling"),
-      expect.objectContaining({
-        headers: { Authorization: `Bearer ${FAKE_TOKEN}` },
-      }),
+    expect(mockHttpClient.authenticatedGet).toHaveBeenCalledWith(
+      "/events/v1.0/events:polling",
     );
-  });
-
-  it("should throw when polling request fails", async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: false, status: 500 });
-
-    await expect(client.fetchEvents()).rejects.toThrow("iFood polling request failed: 500");
   });
 
   it("should delegate acknowledgment to acknowledgment client", async () => {

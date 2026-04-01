@@ -69,4 +69,16 @@ describe("IFoodEventRepository", () => {
 
     expect(mockTenantDatabase.executeWithTenant).not.toHaveBeenCalled();
   });
+
+  it("should mark event as processed within tenant context", async () => {
+    const eventId = IFoodEventId.create("event-to-process");
+
+    await repository.markAsProcessed(FAKE_STORE_ID_VO, eventId);
+
+    expect(mockTenantDatabase.executeWithTenant).toHaveBeenCalledWith(
+      FAKE_STORE_ID,
+      expect.any(Function),
+    );
+    expect(mockSet).toHaveBeenCalledWith({ processed: true });
+  });
 });
