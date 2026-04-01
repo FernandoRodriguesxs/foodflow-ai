@@ -6,6 +6,9 @@ import {
 
 const FAKE_ACCESS_TOKEN = "fake-access-token-abc";
 const FAKE_EXPIRES_IN = 3600;
+const FAKE_BASE_URL = "https://merchant-api.ifood.com.br";
+const FAKE_CLIENT_ID = "test-client-id";
+const FAKE_CLIENT_SECRET = "test-client-secret";
 
 describe("IFoodAuthService", () => {
   const mockRedis = {
@@ -17,6 +20,9 @@ describe("IFoodAuthService", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.IFOOD_API_BASE_URL = FAKE_BASE_URL;
+    process.env.IFOOD_CLIENT_ID = FAKE_CLIENT_ID;
+    process.env.IFOOD_CLIENT_SECRET = FAKE_CLIENT_SECRET;
     global.fetch = jest.fn();
   });
 
