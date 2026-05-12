@@ -31,4 +31,9 @@ export class DashboardGateway
   }
 
   handleDisconnect(_client: Socket): void {}
+
+  broadcastToStore(storeId: string, event: string, payload: unknown): void {
+    const room = buildStoreRoom(storeId);
+    this.server.to(room).emit(event, payload);
+  }
 }

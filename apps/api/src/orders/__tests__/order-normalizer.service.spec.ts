@@ -1,5 +1,6 @@
 import { OrderNormalizerService } from "@orders/order-normalizer.service";
 import type { OrderRepository } from "@orders/order.repository";
+import type { OrderEventEmitterService } from "@orders/order-event-emitter.service";
 import { IFOOD_ORDER_SOURCE } from "@orders/orders.constants";
 import {
   FAKE_STORE_ID,
@@ -14,7 +15,11 @@ describe("OrderNormalizerService", () => {
     saveOrder: jest.fn().mockResolvedValue(fakeCreatedOrder),
   } as unknown as jest.Mocked<OrderRepository>;
 
-  const normalizerService = new OrderNormalizerService(mockOrderRepository);
+  const mockEventEmitter = {
+    emitNewOrder: jest.fn(),
+  } as unknown as jest.Mocked<OrderEventEmitterService>;
+
+  const normalizerService = new OrderNormalizerService(mockOrderRepository, mockEventEmitter);
 
   afterEach(() => jest.clearAllMocks());
 
@@ -60,5 +65,13 @@ describe("OrderNormalizerService", () => {
 
     const savedData = mockOrderRepository.saveOrder.mock.calls[0][0];
     expect(Object.isFrozen(savedData)).toBe(true);
+  });
+
+  it("should emit new_order event after saving", async () => {
+    const rawOrder = createFakeRawOrderData();
+
+    await normalizerService.normalizeIFoodOrder(rawOrder);
+
+    expect(mockEventEmitter.emitNewOrder).toHaveBeenCalledWith(fakeCreatedOrder);
   });
 });
