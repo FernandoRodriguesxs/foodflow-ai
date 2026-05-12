@@ -137,13 +137,14 @@ Critério: novo pedido → evento `new_order` recebido no socket; status atualiz
 ## Fase 7: Integração WhatsApp
 
 ### TASK-016: Criar WhatsAppAdapter — webhook receiver ✅
-**Status:** Concluída — pendente commit
+**Status:** Concluída — commit `b6364cb`
 Entrada: schema de conversations (TASK-005)
 Ação: criar `whatsapp.module.ts` e `whatsapp-webhook.controller.ts`; endpoint POST `/api/webhooks/whatsapp` que: identifica store pelo `whatsapp_number`, salva mensagem em `conversations` (append ao JSON array); criar `conversation.service.ts`
 Saída: mensagens WhatsApp recebidas e persistidas
 Critério: POST simula mensagem Evolution API → mensagem salva em conversations com store correto
 
-### TASK-017: Criar WhatsAppAdapter — interpretação com Claude Haiku
+### TASK-017: Criar WhatsAppAdapter — interpretação com Claude Haiku ✅
+**Status:** Concluída — pendente commit
 Entrada: webhook WhatsApp (TASK-016)
 Ação: criar `whatsapp-nlp.service.ts`; instalar `@anthropic-ai/sdk`; enviar mensagem para Claude Haiku 4.5 com prompt estruturado (conforme specs.md UC-005); parsear resposta JSON; validar schema com zod; retornar `ParsedWhatsAppOrder`
 Saída: pedido estruturado a partir de mensagem em linguagem natural
