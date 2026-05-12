@@ -14,6 +14,7 @@ module.exports = {
     "^@ifood/(.*)$": "<rootDir>/ifood/$1",
     "^@orders/(.*)$": "<rootDir>/orders/$1",
     "^@dashboard/(.*)$": "<rootDir>/dashboard/$1",
+    "^@whatsapp/(.*)$": "<rootDir>/whatsapp/$1",
     "^@shared/(.*)$": "<rootDir>/shared/$1",
   },
 };

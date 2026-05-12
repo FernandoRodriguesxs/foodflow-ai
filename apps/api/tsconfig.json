@@ -24,6 +24,7 @@
       "@ifood/*": ["src/ifood/*"],
       "@orders/*": ["src/orders/*"],
       "@dashboard/*": ["src/dashboard/*"],
+      "@whatsapp/*": ["src/whatsapp/*"],
       "@shared/*": ["src/shared/*"]
     }
   },

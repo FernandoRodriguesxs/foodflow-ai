@@ -7,13 +7,15 @@
 
 ## Fase 1: Setup
 
-### TASK-001: Setup monorepo Turborepo + pnpm
+### TASK-001: Setup monorepo Turborepo + pnpm ✅
+**Status:** Concluída — commit `84449b3`
 Entrada: repositório vazio com `.claude/` e `specs/` já existentes
 Ação: inicializar Turborepo com pnpm workspaces; criar `apps/web` (Next.js 16.2 + React 19 + Tailwind CSS v4), `apps/api` (NestJS 11 + Fastify) e `packages/shared` (TypeScript); configurar `turbo.json` com pipelines build/lint/test
 Saída: `pnpm install` funciona, `turbo run build` passa em todos os workspaces
 Critério: estrutura de pastas conforme `design.md`, builds sem erros
 
-### TASK-002: Configurar Drizzle ORM + conexão Neon
+### TASK-002: Configurar Drizzle ORM + conexão Neon ✅
+**Status:** Concluída — commit `f7ab263`
 Entrada: monorepo configurado (TASK-001)
 Ação: instalar `drizzle-orm`, `@neondatabase/serverless` e `drizzle-kit` em `apps/api`; criar `drizzle.config.ts` lendo `DATABASE_URL` de env; criar módulo `database.module.ts` no NestJS exportando instância do Drizzle
 Saída: conexão com banco Neon estabelecida via driver serverless
@@ -23,19 +25,22 @@ Critério: script de teste de conexão `pnpm --filter api db:test` executa sem e
 
 ## Fase 2: Schema do Banco
 
-### TASK-003: Criar schema Drizzle — stores e users
+### TASK-003: Criar schema Drizzle — stores e users ✅
+**Status:** Concluída — commit `17c62f4`
 Entrada: Drizzle configurado (TASK-002)
 Ação: criar `stores.schema.ts` e `users.schema.ts` conforme definido em `specs.md` seção 3; criar enum `user_role`; incluir FK de users para stores
 Saída: migração gerada com `drizzle-kit generate` e aplicada com `drizzle-kit push`
 Critério: tabelas `stores` e `users` existem no banco com constraints corretas
 
-### TASK-004: Criar schema Drizzle — orders e order_items
+### TASK-004: Criar schema Drizzle — orders e order_items ✅
+**Status:** Concluída — commit `a240c4d`
 Entrada: tabelas stores/users existem (TASK-003)
 Ação: criar `orders.schema.ts` e `order-items.schema.ts` conforme `specs.md`; criar enums `order_source` e `order_status`; incluir FKs e índices (store_id+created_at, store_id+status, external_id)
 Saída: migração gerada e aplicada
 Critério: tabelas `orders` e `order_items` existem com enums, FKs e índices
 
-### TASK-005: Criar schema Drizzle — order_status_history, conversations, ifood_events
+### TASK-005: Criar schema Drizzle — order_status_history, conversations, ifood_events ✅
+**Status:** Concluída — commit `e7f3683`
 Entrada: tabelas orders existem (TASK-004)
 Ação: criar `order-status-history.schema.ts`, `conversations.schema.ts` e `ifood-events.schema.ts` conforme `specs.md`; incluir constraint UNIQUE em `ifood_events.event_id`
 Saída: migração gerada e aplicada
@@ -45,13 +50,15 @@ Critério: todas as 7 tabelas existem no banco, constraint unique em event_id fu
 
 ## Fase 3: Auth e Multi-Tenant
 
-### TASK-006: Configurar Better Auth
+### TASK-006: Configurar Better Auth ✅
+**Status:** Concluída — commit `c1fbb57`
 Entrada: monorepo com schema de users (TASK-003)
 Ação: instalar `better-auth` em `apps/api`; configurar provider com PostgreSQL; criar endpoints `/api/auth/register` e `/api/auth/login`; JWT deve conter `user_id`, `store_id` e `role`; criar `auth.middleware.ts` para validar JWT em rotas protegidas
 Saída: endpoints de login/register funcionais, JWT retornado no login
 Critério: POST `/api/auth/register` cria user, POST `/api/auth/login` retorna JWT válido com store_id
 
-### TASK-007: Implementar RLS multi-tenant
+### TASK-007: Implementar RLS multi-tenant ✅
+**Status:** Concluída — commit `30cb3b4`
 Entrada: schema completo (TASK-005) + auth (TASK-006)
 Ação: criar migration SQL com `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` e `CREATE POLICY tenant_isolation` em orders, order_items (via join), order_status_history (via join), conversations, ifood_events; criar `tenant.guard.ts` que executa `SET LOCAL app.current_store_id` antes de cada request
 Saída: queries automaticamente filtradas por tenant
@@ -61,25 +68,29 @@ Critério: query autenticada como store A não retorna dados de store B
 
 ## Fase 4: Integração iFood
 
-### TASK-008: Criar IFoodAdapter — webhook receiver
+### TASK-008: Criar IFoodAdapter — webhook receiver ✅
+**Status:** Concluída — commit `ec50f68`
 Entrada: schema de ifood_events (TASK-005)
 Ação: criar `ifood.module.ts` e `ifood-webhook.controller.ts`; endpoint POST `/api/webhooks/ifood` que: salva evento em `ifood_events`, responde 202, enfileira job `process-ifood-event` no BullMQ; instalar e configurar `@nestjs/bullmq`
 Saída: webhook recebe evento e retorna 202 em < 5s, job criado na fila
 Critério: POST para webhook salva em ifood_events, job aparece na fila Redis
 
-### TASK-009: Criar IFoodAdapter — polling job
+### TASK-009: Criar IFoodAdapter — polling job ✅
+**Status:** Concluída — commit `6efac28`
 Entrada: BullMQ configurado (TASK-008)
 Ação: criar `ifood-polling.job.ts` como BullMQ recurring job (30s); executa GET `/events/v1.0/events:polling` com OAuth2 token; deduplicar por `event_id` verificando tabela `ifood_events`; enfileirar eventos novos; criar `ifood-auth.service.ts` para gerenciar tokens OAuth2 com cache em Redis
 Saída: job rodando a cada 30s, eventos novos enfileirados, duplicados ignorados
 Critério: após 2 ciclos de polling, eventos novos no banco, duplicados não reprocessados
 
-### TASK-010: Criar IFoodAdapter — acknowledgment
+### TASK-010: Criar IFoodAdapter — acknowledgment ✅
+**Status:** Concluída — commit `f55695d`
 Entrada: webhook + polling (TASK-008, TASK-009)
 Ação: criar `ifood-ack.service.ts` que envia POST `/events/v1.0/events/acknowledgment` com array de event IDs; chamar após receber eventos (webhook e polling); marcar `acknowledged=true` em `ifood_events`
 Saída: todos os eventos recebidos são confirmados no iFood
 Critério: campo `acknowledged=true` para todos os eventos após processamento
 
-### TASK-011: Criar IFoodAdapter — buscar detalhes e processar pedido
+### TASK-011: Criar IFoodAdapter — buscar detalhes e processar pedido ✅
+**Status:** Concluída — commit `054ff1e`
 Entrada: eventos enfileirados (TASK-008/009)
 Ação: criar `ifood-order-fetcher.service.ts` como BullMQ worker que processa job `process-ifood-event`; para eventos PLACED: GET `/order/v1.0/orders/{orderId}`; extrair dados do pedido (cliente, itens, total); passar para OrderNormalizerService
 Saída: dados completos do pedido iFood disponíveis para normalização
@@ -89,13 +100,15 @@ Critério: worker processa job, dados do pedido extraídos corretamente
 
 ## Fase 5: Order Hub
 
-### TASK-012: Criar OrderHub — normalização de pedidos
+### TASK-012: Criar OrderHub — normalização de pedidos ✅
+**Status:** Concluída — commit `fb6d2f9`
 Entrada: dados iFood disponíveis (TASK-011)
 Ação: criar `orders.module.ts`, `order-normalizer.service.ts` e `order.repository.ts`; normalizer transforma payload iFood em modelo interno; repository salva em `orders` + `order_items` via Drizzle; retorna pedido criado
 Saída: pedido normalizado salvo nas tabelas orders e order_items
 Critério: pedido iFood salvo com `source='ifood'`, campos mapeados corretamente, itens persistidos
 
-### TASK-013: Criar StatusTransitionService
+### TASK-013: Criar StatusTransitionService ✅
+**Status:** Concluída — commit `100c016`
 Entrada: OrderRepository (TASK-012)
 Ação: criar `status-transition.service.ts` com state machine; validar transições (PLACED→CONFIRMED, CONFIRMED→DISPATCHED, DISPATCHED→CONCLUDED, qualquer→CANCELLED); ao transicionar: atualizar `orders.status`, inserir em `order_status_history`
 Saída: transições válidas aplicadas, inválidas rejeitadas com erro tipado
@@ -105,13 +118,15 @@ Critério: PLACED→CONFIRMED funciona, CONCLUDED→PLACED retorna `InvalidStatu
 
 ## Fase 6: Real-Time (Socket.IO)
 
-### TASK-014: Configurar Socket.IO no NestJS
+### TASK-014: Configurar Socket.IO no NestJS ✅
+**Status:** Concluída — commit `a2b8d5d`
 Entrada: NestJS configurado (TASK-001) + auth (TASK-006)
 Ação: instalar `@nestjs/websockets` e `socket.io`; criar `dashboard.module.ts` e `dashboard.gateway.ts`; autenticação via JWT no handshake; rooms por `store:{store_id}`; ao conectar: join na room do store
 Saída: conexão WebSocket funcional com rooms por tenant
 Critério: cliente conecta com JWT, entra na room do store, recebe evento de teste
 
-### TASK-015: Emitir eventos Socket.IO para pedidos
+### TASK-015: Emitir eventos Socket.IO para pedidos ✅
+**Status:** Concluída — commit `370ceac`
 Entrada: OrderHub (TASK-012) + Socket.IO (TASK-014) + StatusTransition (TASK-013)
 Ação: criar `order-event-emitter.service.ts`; emitir `new_order` (com dados do pedido) na room `store:{store_id}` após salvar pedido; emitir `order_status_updated` (com id, novo status) após transição de status
 Saída: dashboard recebe eventos em tempo real
@@ -121,7 +136,8 @@ Critério: novo pedido → evento `new_order` recebido no socket; status atualiz
 
 ## Fase 7: Integração WhatsApp
 
-### TASK-016: Criar WhatsAppAdapter — webhook receiver
+### TASK-016: Criar WhatsAppAdapter — webhook receiver ✅
+**Status:** Concluída — pendente commit
 Entrada: schema de conversations (TASK-005)
 Ação: criar `whatsapp.module.ts` e `whatsapp-webhook.controller.ts`; endpoint POST `/api/webhooks/whatsapp` que: identifica store pelo `whatsapp_number`, salva mensagem em `conversations` (append ao JSON array); criar `conversation.service.ts`
 Saída: mensagens WhatsApp recebidas e persistidas

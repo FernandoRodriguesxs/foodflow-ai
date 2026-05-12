@@ -5,10 +5,19 @@ import { TenantModule } from "./tenant";
 import { IFoodModule } from "./ifood";
 import { OrdersModule } from "./orders";
 import { DashboardModule } from "./dashboard";
+import { WhatsAppModule } from "./whatsapp";
 import { HealthController } from "./health.controller";
 
 @Module({
-  imports: [DatabaseModule, AuthModule, TenantModule, IFoodModule, OrdersModule, DashboardModule],
+  imports: [
+    DatabaseModule,
+    AuthModule,
+    TenantModule,
+    IFoodModule,
+    OrdersModule,
+    DashboardModule,
+    WhatsAppModule,
+  ],
   controllers: [HealthController],
 })
 export class AppModule {}
