@@ -55,3 +55,14 @@ export async function createConversationWithMessage(
     .returning({ id: conversations.id });
   return row.id;
 }
+
+export async function linkOrderToConversation(
+  database: NeonHttpDatabase,
+  conversationId: string,
+  orderId: string,
+): Promise<void> {
+  await database
+    .update(conversations)
+    .set({ orderId, updatedAt: new Date() })
+    .where(eq(conversations.id, conversationId));
+}

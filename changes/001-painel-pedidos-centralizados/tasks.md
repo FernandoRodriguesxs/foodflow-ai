@@ -144,13 +144,14 @@ Saída: mensagens WhatsApp recebidas e persistidas
 Critério: POST simula mensagem Evolution API → mensagem salva em conversations com store correto
 
 ### TASK-017: Criar WhatsAppAdapter — interpretação com Claude Haiku ✅
-**Status:** Concluída — pendente commit
+**Status:** Concluída — commit `535a324`
 Entrada: webhook WhatsApp (TASK-016)
 Ação: criar `whatsapp-nlp.service.ts`; instalar `@anthropic-ai/sdk`; enviar mensagem para Claude Haiku 4.5 com prompt estruturado (conforme specs.md UC-005); parsear resposta JSON; validar schema com zod; retornar `ParsedWhatsAppOrder`
 Saída: pedido estruturado a partir de mensagem em linguagem natural
 Critério: mensagem "2 pizzas margherita e 1 coca" retorna `{ is_order: true, items: [{name: "pizza margherita", quantity: 2}, {name: "coca-cola", quantity: 1}] }`
 
-### TASK-018: Integrar WhatsApp com OrderHub
+### TASK-018: Integrar WhatsApp com OrderHub ✅
+**Status:** Concluída — pendente commit
 Entrada: NLP (TASK-017) + OrderHub (TASK-012) + EventEmitter (TASK-015)
 Ação: no webhook controller, após interpretação com `is_order: true`: criar adapter para normalizer com `source='whatsapp'`; salvar pedido via OrderNormalizerService; atualizar `conversations.order_id`; emitir `new_order` via Socket.IO
 Saída: pedido WhatsApp aparece no dashboard em tempo real

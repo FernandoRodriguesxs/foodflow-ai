@@ -1,5 +1,6 @@
 import type { WhatsAppNumber } from "@whatsapp/value-objects/whatsapp-number";
 import type { MessageContent } from "@whatsapp/value-objects/message-content";
+import type { StoreId } from "@shared/value-objects/store-id";
 
 export interface WhatsAppWebhookKey {
   readonly remoteJid: string;
@@ -34,4 +35,9 @@ export interface ConversationMessageRecord {
   readonly content: string;
   readonly receivedAt: string;
   readonly direction: MessageDirection;
+}
+
+export interface PersistedConversation {
+  readonly conversationId: string;
+  readonly storeId: StoreId;
 }

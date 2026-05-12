@@ -7,6 +7,7 @@ import {
   appendMessageToConversation,
   createConversationWithMessage,
   findActiveConversation,
+  linkOrderToConversation,
 } from "./conversation-persistence.helpers";
 
 @Injectable()
@@ -26,5 +27,11 @@ export class ConversationRepository {
       }
       return createConversationWithMessage(db, storeId, sender, record);
     });
+  }
+
+  async linkOrder(storeId: StoreId, conversationId: string, orderId: string): Promise<void> {
+    await this.tenantDatabase.executeWithTenant(storeId.value, (db) =>
+      linkOrderToConversation(db, conversationId, orderId),
+    );
   }
 }

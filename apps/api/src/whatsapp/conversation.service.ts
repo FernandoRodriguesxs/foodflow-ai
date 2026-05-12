@@ -4,6 +4,7 @@ import { ConversationRepository } from "./conversation.repository";
 import type {
   ConversationMessageRecord,
   IncomingWhatsAppMessage,
+  PersistedConversation,
 } from "./whatsapp.types";
 
 @Injectable()
@@ -15,10 +16,15 @@ export class ConversationService {
 
   async persistIncomingMessage(
     incoming: IncomingWhatsAppMessage,
-  ): Promise<string> {
+  ): Promise<PersistedConversation> {
     const storeId = await this.storeResolver.resolveStoreId(incoming.storeWhatsApp);
     const record = buildMessageRecord(incoming);
-    return this.repository.appendIncomingMessage(storeId, incoming.senderWhatsApp, record);
+    const conversationId = await this.repository.appendIncomingMessage(
+      storeId,
+      incoming.senderWhatsApp,
+      record,
+    );
+    return Object.freeze({ conversationId, storeId });
   }
 }
 

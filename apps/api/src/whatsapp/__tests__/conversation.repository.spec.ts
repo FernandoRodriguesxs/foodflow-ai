@@ -70,4 +70,15 @@ describe("ConversationRepository", () => {
       repository.appendIncomingMessage(FAKE_STORE_ID_VO, sender, createFakeMessageRecord()),
     ).rejects.toThrow("db fail");
   });
+
+  it("should link an order id to an existing conversation inside tenant context", async () => {
+    await repository.linkOrder(FAKE_STORE_ID_VO, FAKE_CONVERSATION_ID, "order-uuid-999");
+
+    expect(mockTenantDatabase.executeWithTenant).toHaveBeenCalledWith(
+      FAKE_STORE_ID,
+      expect.any(Function),
+    );
+    expect(mockUpdate).toHaveBeenCalledTimes(1);
+    expect(mockUpdateSet).toHaveBeenCalledWith({ orderId: "order-uuid-999", updatedAt: expect.any(Date) });
+  });
 });

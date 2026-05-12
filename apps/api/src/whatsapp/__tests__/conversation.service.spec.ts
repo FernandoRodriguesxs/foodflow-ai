@@ -23,12 +23,14 @@ describe("ConversationService", () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it("should resolve store, persist message and return conversation id", async () => {
+  it("should resolve store, persist message and return conversation id with store id", async () => {
     const incoming = createFakeIncomingMessage();
 
     const result = await service.persistIncomingMessage(incoming);
 
-    expect(result).toBe(FAKE_CONVERSATION_ID);
+    expect(result.conversationId).toBe(FAKE_CONVERSATION_ID);
+    expect(result.storeId).toBe(FAKE_STORE_ID_VO);
+    expect(Object.isFrozen(result)).toBe(true);
     expect(mockResolver.resolveStoreId).toHaveBeenCalledWith(incoming.storeWhatsApp);
   });
 
