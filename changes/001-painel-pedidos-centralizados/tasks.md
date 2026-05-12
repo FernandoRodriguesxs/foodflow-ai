@@ -151,7 +151,7 @@ Saída: pedido estruturado a partir de mensagem em linguagem natural
 Critério: mensagem "2 pizzas margherita e 1 coca" retorna `{ is_order: true, items: [{name: "pizza margherita", quantity: 2}, {name: "coca-cola", quantity: 1}] }`
 
 ### TASK-018: Integrar WhatsApp com OrderHub ✅
-**Status:** Concluída — pendente commit
+**Status:** Concluída — commit `05513b4`
 Entrada: NLP (TASK-017) + OrderHub (TASK-012) + EventEmitter (TASK-015)
 Ação: no webhook controller, após interpretação com `is_order: true`: criar adapter para normalizer com `source='whatsapp'`; salvar pedido via OrderNormalizerService; atualizar `conversations.order_id`; emitir `new_order` via Socket.IO
 Saída: pedido WhatsApp aparece no dashboard em tempo real
@@ -161,7 +161,8 @@ Critério: mensagem WhatsApp → pedido salvo com `source='whatsapp'` → evento
 
 ## Fase 8: API REST do Dashboard
 
-### TASK-019: API de listagem de pedidos
+### TASK-019: API de listagem de pedidos ✅
+**Status:** Concluída — pendente commit
 Entrada: OrderRepository (TASK-012) + auth (TASK-006) + RLS (TASK-007)
 Ação: criar `orders.controller.ts` com endpoint GET `/api/orders`; filtros: `status` (comma-separated), `source`, `page` (default 1), `limit` (default 20); ordenação por `created_at DESC`; paginação com `total`, `page`, `totalPages`
 Saída: endpoint retorna lista paginada de pedidos filtrada por tenant

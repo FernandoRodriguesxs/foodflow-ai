@@ -1,6 +1,6 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { DatabaseModule } from "./database";
-import { AuthModule } from "./auth";
+import { AuthModule, AuthMiddleware } from "./auth";
 import { TenantModule } from "./tenant";
 import { IFoodModule } from "./ifood";
 import { OrdersModule } from "./orders";
@@ -20,4 +20,8 @@ import { HealthController } from "./health.controller";
   ],
   controllers: [HealthController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AuthMiddleware).forRoutes("api/orders");
+  }
+}
