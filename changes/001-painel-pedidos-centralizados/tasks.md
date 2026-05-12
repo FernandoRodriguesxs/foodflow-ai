@@ -162,13 +162,14 @@ Critério: mensagem WhatsApp → pedido salvo com `source='whatsapp'` → evento
 ## Fase 8: API REST do Dashboard
 
 ### TASK-019: API de listagem de pedidos ✅
-**Status:** Concluída — pendente commit
+**Status:** Concluída — commit `8b4c2a4`
 Entrada: OrderRepository (TASK-012) + auth (TASK-006) + RLS (TASK-007)
 Ação: criar `orders.controller.ts` com endpoint GET `/api/orders`; filtros: `status` (comma-separated), `source`, `page` (default 1), `limit` (default 20); ordenação por `created_at DESC`; paginação com `total`, `page`, `totalPages`
 Saída: endpoint retorna lista paginada de pedidos filtrada por tenant
 Critério: GET `/api/orders?status=PLACED,CONFIRMED&page=1&limit=10` retorna dados corretos
 
-### TASK-020: API de atualização de status
+### TASK-020: API de atualização de status ✅
+**Status:** Concluída — pendente commit
 Entrada: StatusTransitionService (TASK-013) + EventEmitter (TASK-015) + auth (TASK-006)
 Ação: criar endpoint PATCH `/api/orders/:id/status` no OrdersController; request body: `{ status }` validado com Zod; chamar StatusTransitionService; se válido: retornar 200 com pedido atualizado; se inválido: retornar 422
 Saída: status atualizado com histórico e evento Socket.IO emitido

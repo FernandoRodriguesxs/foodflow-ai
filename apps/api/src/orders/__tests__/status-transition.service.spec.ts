@@ -1,3 +1,4 @@
+import { NotFoundException } from "@nestjs/common";
 import { StatusTransitionService } from "@orders/status-transition.service";
 import { InvalidStatusTransitionError } from "@orders/errors/invalid-status-transition.error";
 import type { OrderStatusRepository } from "@orders/order-status.repository";
@@ -52,7 +53,7 @@ describe("StatusTransitionService", () => {
     ).rejects.toThrow(InvalidStatusTransitionError);
   });
 
-  it("should throw when order is not found", async () => {
+  it("should throw NotFoundException when order is not found", async () => {
     mockRepository.findById = jest.fn().mockResolvedValue(undefined);
     const nonexistentOrderId = OrderId.create("nonexistent-id");
 
@@ -60,7 +61,7 @@ describe("StatusTransitionService", () => {
 
     await expect(
       notFoundService.transition(fakeStoreId, nonexistentOrderId, "CONFIRMED"),
-    ).rejects.toThrow("Order nonexistent-id not found");
+    ).rejects.toThrow(NotFoundException);
   });
 
   it("should allow transition to CANCELLED from any active status", async () => {

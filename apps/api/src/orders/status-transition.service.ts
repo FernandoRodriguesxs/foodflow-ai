@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import type { StoreId } from "@shared/value-objects/store-id";
 import type { OrderId } from "@shared/value-objects/order-id";
 import { OrderStatusRepository } from "./order-status.repository";
@@ -29,7 +29,7 @@ export class StatusTransitionService {
   private async findOrderOrFail(storeId: StoreId, orderId: OrderId): Promise<CreatedOrder> {
     const order = await this.orderStatusRepository.findById(storeId, orderId);
     if (!order) {
-      throw new Error(`Order ${orderId.value} not found`);
+      throw new NotFoundException(`Order ${orderId.value} not found`);
     }
     return order;
   }
