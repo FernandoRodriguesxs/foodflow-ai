@@ -169,7 +169,7 @@ Saída: endpoint retorna lista paginada de pedidos filtrada por tenant
 Critério: GET `/api/orders?status=PLACED,CONFIRMED&page=1&limit=10` retorna dados corretos
 
 ### TASK-020: API de atualização de status ✅
-**Status:** Concluída — pendente commit
+**Status:** Concluída — commit `ba27fb5`
 Entrada: StatusTransitionService (TASK-013) + EventEmitter (TASK-015) + auth (TASK-006)
 Ação: criar endpoint PATCH `/api/orders/:id/status` no OrdersController; request body: `{ status }` validado com Zod; chamar StatusTransitionService; se válido: retornar 200 com pedido atualizado; se inválido: retornar 422
 Saída: status atualizado com histórico e evento Socket.IO emitido
@@ -179,7 +179,8 @@ Critério: PATCH com transição válida → 200 + history criado + socket emiti
 
 ## Fase 9: Frontend Dashboard
 
-### TASK-021: Dashboard Next.js — layout e autenticação
+### TASK-021: Dashboard Next.js — layout e autenticação ✅
+**Status:** Concluída — pendente commit
 Entrada: auth configurada (TASK-006) + apps/web (TASK-001)
 Ação: instalar shadcn/ui em apps/web; criar layout base com sidebar/header; criar páginas `/login` e `/register` com formulários; integrar Better Auth client para login/logout; criar middleware de proteção de rotas (`/dashboard/*` requer auth)
 Saída: login funcional, layout base renderizado, rotas protegidas
